@@ -9,7 +9,7 @@ before_install:
   - export PATH="${TRAVIS_BUILD_DIR}/Godeps/_workspace/bin:$PATH"
 
 install:
-  - dep ensure
+  - dep install
 
 matrix:
   include:
