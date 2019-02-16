@@ -1,0 +1,13 @@
+language: go
+
+matrix:
+  include:
+    - language: node_js
+      node_js:
+        - "10"
+      script: npm ci
+
+go:
+  - 1.11.5
+
+script: make deploy
