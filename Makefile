@@ -8,4 +8,4 @@ clean:
 	rm -rf ./bin ./vendor Gopkg.lock
 
 deploy: clean build
-	sls deploy --verbose --aws-profile pluto-lambda-maker
+	npx sls deploy --verbose --aws-profile pluto-lambda-maker
