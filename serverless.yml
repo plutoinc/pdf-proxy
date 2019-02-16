@@ -1,0 +1,31 @@
+service: lambda-pdf-proxy
+
+frameworkVersion: ">=1.28.0 <2.0.0"
+
+plugins:
+  - serverless-apigw-binary
+
+provider:
+  name: aws
+  runtime: go1.x
+  logRetentionInDays: 14
+  memorySize: 128
+  timeout: 30
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  proxy:
+    handler: bin/proxy
+    events:
+      - http:
+          path: get-pdf
+          method: get
+custom:
+  apigwBinary:
+    types:
+      - "*/*"
