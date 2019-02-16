@@ -1,13 +1,11 @@
 language: go
+go:
+  - 1.11.5
 
 matrix:
   include:
     - language: node_js
       node_js:
         - "10"
-      script: npm ci
 
-go:
-  - 1.11.5
-
-script: make deploy
+script: npm ci && make deploy
