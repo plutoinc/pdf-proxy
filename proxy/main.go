@@ -32,6 +32,10 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	defer res.Body.Close()
 
 	ct := res.Header.Get("Content-Type")
+
+	if ct != "application/pdf" {
+		log.Panic(err)
+	}
 	log.Printf("content type is " + ct)
 
 	data, err := ioutil.ReadAll(res.Body)

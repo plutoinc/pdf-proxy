@@ -14,12 +14,21 @@
   revision = "527f5d301d2993af078be6d0b63372786b3fc18f"
   version = "v1.8.2"
 
+[[projects]]
+  branch = "master"
+  digest = "1:679b298ea364baa9f3805502ac5157eb7d8dcc58423b2e0dab0fb8405ff0c710"
+  name = "github.com/fnproject/fdk-go"
+  packages = ["."]
+  pruneopts = ""
+  revision = "bd24a5aa63cf1a4355575d8eec6cd30d4702d99b"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
     "github.com/aws/aws-lambda-go/events",
     "github.com/aws/aws-lambda-go/lambda",
+    "github.com/fnproject/fdk-go",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
