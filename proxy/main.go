@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/base64"
 	"io/ioutil"
 	"log"
@@ -19,8 +18,14 @@ import (
 type Response events.APIGatewayProxyResponse
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
-func Handler(ctx context.Context) (Response, error) {
-	res, err := http.Get("http://arxiv.org/pdf/nucl-th/9911047.pdf")
+func Handler(req events.APIGatewayProxyRequest) (Response, error) {
+	pdfURL := req.QueryStringParameters["pdf_url"]
+
+	if len(pdfURL) == 0 {
+		log.Fatal("Not Valid PDF URL")
+	}
+
+	res, err := http.Get(pdfURL)
 	if err != nil {
 		log.Panic(err)
 	}
