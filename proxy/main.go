@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,6 +21,15 @@ type Response events.APIGatewayProxyResponse
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	pdfURL := req.QueryStringParameters["pdf_url"]
+	title := req.QueryStringParameters["title"]
+	forceDownload := req.QueryStringParameters["download"]
+
+	var resType string
+	if forceDownload != "" {
+		resType = "inline"
+	} else {
+		resType = "attachment"
+	}
 
 	if len(pdfURL) == 0 {
 		log.Fatal("Not Valid PDF URL")
@@ -48,12 +58,15 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	encoder.Write(data)
 	encoder.Close()
 
+	cd := fmt.Sprintf("%s; filename=\"%s\"", resType, title)
+
 	resp := Response{
 		StatusCode:      200,
 		IsBase64Encoded: true,
 		Body:            buf.String(),
 		Headers: map[string]string{
-			"Content-Type": "application/pdf",
+			"Content-Type":        "application/pdf",
+			"Content-Disposition": cd,
 		},
 	}
 
