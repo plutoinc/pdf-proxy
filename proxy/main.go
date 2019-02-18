@@ -12,6 +12,19 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
+func setCORSHeader(origin string) string {
+	var allowedOrigins = [3]string{"https://scinapse.io", "https://dev.scinapse.io", "http://localhost:3000"}
+
+	allowOrigin := "*"
+	for i := 0; i < len(allowedOrigins); i++ {
+		if allowedOrigins[i] == origin {
+			allowOrigin = origin
+		}
+	}
+
+	return allowOrigin
+}
+
 // Response is of type APIGatewayProxyResponse since we're leveraging the
 // AWS Lambda Proxy Request functionality (default behavior)
 //
@@ -23,6 +36,21 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	pdfURL := req.QueryStringParameters["pdf_url"]
 	title := req.QueryStringParameters["title"]
 	forceDownload := req.QueryStringParameters["download"]
+	corsOrigin := setCORSHeader(req.Headers["origin"])
+
+	if corsOrigin == "*" {
+		resp := Response{
+			StatusCode:      412,
+			IsBase64Encoded: false,
+			Body:            "Precondition Failed",
+			Headers: map[string]string{
+				"Access-Control-Allow-Origin": corsOrigin,
+				"Content-Type":                "text/html",
+			},
+		}
+
+		return resp, nil
+	}
 
 	var resType string
 	if forceDownload != "" {
@@ -65,8 +93,9 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 		IsBase64Encoded: true,
 		Body:            buf.String(),
 		Headers: map[string]string{
-			"Content-Type":        "application/pdf",
-			"Content-Disposition": cd,
+			"Content-Type":                "application/pdf",
+			"Access-Control-Allow-Origin": corsOrigin,
+			"Content-Disposition":         cd,
 		},
 	}
 
