@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -60,25 +61,25 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	}
 
 	if len(pdfURL) == 0 {
-		log.Fatal("Not Valid PDF URL")
+		return serverError(errors.New("not valid PDF url"), corsOrigin)
 	}
 
 	res, err := http.Get(pdfURL)
 	if err != nil {
-		log.Panic(err)
+		return serverError(err, corsOrigin)
 	}
 	defer res.Body.Close()
 
 	ct := res.Header.Get("Content-Type")
 
 	if ct != "application/pdf" {
-		log.Panic(err)
+		return serverError(err, corsOrigin)
 	}
 	log.Printf("content type is " + ct)
 
 	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Panic(err)
+		return serverError(err, corsOrigin)
 	}
 
 	var buf bytes.Buffer
@@ -104,4 +105,15 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 
 func main() {
 	lambda.Start(Handler)
+}
+
+func serverError(err error, origin string) (Response, error) {
+	return Response{
+		StatusCode:      http.StatusInternalServerError,
+		IsBase64Encoded: false,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin": origin,
+		},
+		Body: http.StatusText(http.StatusInternalServerError),
+	}, nil
 }
