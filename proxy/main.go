@@ -87,7 +87,7 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	gzipWriter := gzip.NewWriter(&buf)
 	defer gzipWriter.Close()
 	if _, err := gzipWriter.Write(data); err != nil {
-		log.Print(err)
+		log.Printf("error occurred at gzip writer, %v", err)
 		return serverError(err, corsOrigin)
 	}
 
@@ -96,7 +96,7 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	defer encoder.Close()
 
 	if _, err := encoder.Write(buf.Bytes()); err != nil {
-		log.Print(err)
+		log.Printf("error occurred at b64 writer, %v", err)
 		return serverError(err, corsOrigin)
 	}
 
