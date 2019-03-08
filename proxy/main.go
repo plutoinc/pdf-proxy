@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"compress/gzip"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -83,9 +84,14 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	}
 
 	var buf bytes.Buffer
-	encoder := base64.NewEncoder(base64.StdEncoding, &buf)
-	encoder.Write(data)
-	encoder.Close()
+	gzipWriter := gzip.NewWriter(&buf)
+	defer gzipWriter.Close()
+	gzipWriter.Write(data)
+
+	var encodedBuf bytes.Buffer
+	encoder := base64.NewEncoder(base64.StdEncoding, &encodedBuf)
+	defer encoder.Close()
+	encoder.Write(buf.Bytes())
 
 	cd := fmt.Sprintf("%s; filename=\"%s\"", resType, title)
 
@@ -96,6 +102,7 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 		Headers: map[string]string{
 			"Content-Type":                "application/pdf",
 			"Cache-Control":               "max-age=31536000",
+			"Content-Encoding":            "gzip",
 			"Access-Control-Allow-Origin": corsOrigin,
 			"Content-Disposition":         cd,
 		},
