@@ -88,7 +88,7 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	defer gzipWriter.Close()
 	if _, err := gzipWriter.Write(data); err != nil {
 		log.Print(err)
-		serverError(err, corsOrigin)
+		return serverError(err, corsOrigin)
 	}
 
 	var encodedBuf bytes.Buffer
@@ -97,7 +97,7 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 
 	if _, err := encoder.Write(buf.Bytes()); err != nil {
 		log.Print(err)
-		serverError(err, corsOrigin)
+		return serverError(err, corsOrigin)
 	}
 
 	cd := fmt.Sprintf("%s; filename=\"%s\"", resType, title)
