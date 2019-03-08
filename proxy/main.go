@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"compress/gzip"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -76,18 +74,11 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	if ct != "application/pdf" {
 		return serverError(err, corsOrigin)
 	}
+
 	log.Printf("content type is " + ct)
 
 	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return serverError(err, corsOrigin)
-	}
-
-	var buf bytes.Buffer
-	gzipWriter := gzip.NewWriter(&buf)
-	defer gzipWriter.Close()
-	if _, err := gzipWriter.Write(data); err != nil {
-		log.Printf("error occurred at gzip writer, %v", err)
 		return serverError(err, corsOrigin)
 	}
 
@@ -96,11 +87,10 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	resp := Response{
 		StatusCode:      200,
 		IsBase64Encoded: true,
-		Body:            base64.StdEncoding.EncodeToString(buf.Bytes()),
+		Body:            base64.StdEncoding.EncodeToString(data),
 		Headers: map[string]string{
 			"Content-Type":                "application/pdf",
 			"Cache-Control":               "max-age=31536000",
-			"Content-Encoding":            "gzip",
 			"Access-Control-Allow-Origin": corsOrigin,
 			"Content-Disposition":         cd,
 		},
