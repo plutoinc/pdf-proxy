@@ -105,7 +105,7 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 	resp := Response{
 		StatusCode:      200,
 		IsBase64Encoded: true,
-		Body:            buf.String(),
+		Body:            encodedBuf.String(),
 		Headers: map[string]string{
 			"Content-Type":                "application/pdf",
 			"Cache-Control":               "max-age=31536000",
