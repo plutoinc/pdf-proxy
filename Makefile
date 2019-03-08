@@ -12,4 +12,3 @@ deploy: clean build
 
 deploy-prod: clean build
 	npx sls deploy -s prod --verbose --aws-profile pluto-lambda-maker
-	

@@ -95,6 +95,7 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 		Body:            buf.String(),
 		Headers: map[string]string{
 			"Content-Type":                "application/pdf",
+			"Cache-Control":               "max-age=31536000",
 			"Access-Control-Allow-Origin": corsOrigin,
 			"Content-Disposition":         cd,
 		},
