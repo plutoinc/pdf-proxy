@@ -1,4 +1,4 @@
-.PHONY: build clean deploy
+.PHONY: build clean deploy deploy-prod
 
 build:
 	dep ensure -v
@@ -9,3 +9,7 @@ clean:
 
 deploy: clean build
 	npx sls deploy --verbose --aws-profile pluto-lambda-maker
+
+deploy-prod: clean build
+	npx sls deploy -s prod --verbose --aws-profile pluto-lambda-maker
+	
