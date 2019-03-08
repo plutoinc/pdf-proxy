@@ -91,21 +91,12 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 		return serverError(err, corsOrigin)
 	}
 
-	var encodedBuf bytes.Buffer
-	encoder := base64.NewEncoder(base64.StdEncoding, &encodedBuf)
-	defer encoder.Close()
-
-	if _, err := encoder.Write(buf.Bytes()); err != nil {
-		log.Printf("error occurred at b64 writer, %v", err)
-		return serverError(err, corsOrigin)
-	}
-
 	cd := fmt.Sprintf("%s; filename=\"%s\"", resType, title)
 
 	resp := Response{
 		StatusCode:      200,
 		IsBase64Encoded: true,
-		Body:            encodedBuf.String(),
+		Body:            base64.StdEncoding.EncodeToString(buf.Bytes()),
 		Headers: map[string]string{
 			"Content-Type":                "application/pdf",
 			"Cache-Control":               "max-age=31536000",
