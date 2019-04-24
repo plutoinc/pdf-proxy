@@ -22,3 +22,6 @@ vendor
 
 # node dependencies
 node_modules
+
+# editor
+.idea

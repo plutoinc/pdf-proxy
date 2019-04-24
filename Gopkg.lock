@@ -2,33 +2,14 @@
 
 
 [[projects]]
-  digest = "1:4775daf89638182e60b52ca32dacecb030aff6f9dcecb28af389f6e8aa807ac7"
   name = "github.com/aws/aws-lambda-go"
-  packages = [
-    "events",
-    "lambda",
-    "lambda/messages",
-    "lambdacontext",
-  ]
-  pruneopts = ""
+  packages = ["events","lambda","lambda/messages","lambdacontext"]
   revision = "527f5d301d2993af078be6d0b63372786b3fc18f"
   version = "v1.8.2"
-
-[[projects]]
-  branch = "master"
-  digest = "1:a24dcf6eca7b6b6a4c7b9b0aa48fe64aa7405f735673d6f3279479f15a243907"
-  name = "github.com/fnproject/fdk-go"
-  packages = ["."]
-  pruneopts = ""
-  revision = "52514a2f474b3fb9655faab5095322cbb0c1a356"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = [
-    "github.com/aws/aws-lambda-go/events",
-    "github.com/aws/aws-lambda-go/lambda",
-    "github.com/fnproject/fdk-go",
-  ]
+  inputs-digest = "1d824a6429f89c276153547f37ad0a0966c5a1145f78e261bc129ca4b46c9a39"
   solver-name = "gps-cdcl"
   solver-version = 1
